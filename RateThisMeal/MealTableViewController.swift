@@ -31,18 +31,18 @@ class MealTableViewController: UITableViewController {
 //        }
     }
     
-    func loadSampleMeals() {
-        let defaultPhoto = UIImage(named: "defaultPhoto")!
-        let meal1 = Meal(name: "Caprese Salad", photo: defaultPhoto, rating: 4)!
-        
-        //let photo2 = UIImage(named: "default")!
-        let meal2 = Meal(name: "Chicken and Potatoes", photo: defaultPhoto, rating: 5)!
-        
-        //let photo3 = UIImage(named: "meal3")!
-        let meal3 = Meal(name: "Pasta with Meatballs", photo: defaultPhoto, rating: 3)!
-
-        meals += [meal1, meal2, meal3]
-    }
+//    func loadSampleMeals() {
+//        let defaultPhoto = UIImage(named: "defaultPhoto")!
+//        let meal1 = Meal(name: "Caprese Salad", photo: defaultPhoto, rating: 4, comment: nil)!
+//        
+//        //let photo2 = UIImage(named: "default")!
+//        let meal2 = Meal(name: "Chicken and Potatoes", photo: defaultPhoto, rating: 5, comment: nil)!
+//        
+//        //let photo3 = UIImage(named: "meal3")!
+//        let meal3 = Meal(name: "Pasta with Meatballs", photo: defaultPhoto, rating: 3, comment: nil)!
+//
+//        meals += [meal1, meal2, meal3]
+//    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

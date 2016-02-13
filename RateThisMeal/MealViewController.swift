@@ -9,7 +9,7 @@
 import UIKit
 import MobileCoreServices
 
-class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate {
 
     
     // MARK: Properties
@@ -17,6 +17,7 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
     @IBOutlet weak var photoImageView: UIImageView!
     @IBOutlet weak var ratingControl: RatingControl!
     @IBOutlet weak var saveButton: UIBarButtonItem!
+    @IBOutlet weak var commentTextView: UITextView!
     
     // This value is either passed by `MealTableViewController` in `prepareForSegue(_:sender:)`
     // or constructed as part of adding a new meal.
@@ -31,8 +32,25 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // Sign up to be notified when the keyboard is displayed
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillShow:"), name:UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillHide:"), name:UIKeyboardWillHideNotification, object: nil)
+
+        // Add done button to keyboard
+        self.addDoneButtonOnKeyboard()
+        
+        // Add border to UITextView
+        commentTextView.layer.borderColor = UIColor(red: 0.79, green: 0.79, blue: 0.79, alpha: 1.0).CGColor
+        commentTextView.layer.borderWidth = 0.5
+        commentTextView.layer.cornerRadius = 5
+        
         // Handle the text field’s user input through delegate callbacks.
         nameTextField.delegate = self
+        
+
+        // Handle the text field’s user input through delegate callbacks.
+        commentTextView.delegate = self
         
         // Set up views if editing an existing Meal.
         if let meal = meal {
@@ -40,16 +58,85 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
             nameTextField.text   = meal.name
             photoImageView.image = meal.photo
             ratingControl.rating = meal.rating
+            commentTextView.text = meal.comment
         }
         
         // Enable the Save button only if the text field has a valid Meal name.
         checkValidMealName()
     }
 
+    override func viewWillDisappear(animated: Bool) {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: self.view.window)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: self.view.window)
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+
+    // MARK: Keyboard handling
+    func keyboardWillShow(sender: NSNotification) {
+
+        // Only shift keyboard for comment text view
+        if commentTextView.isFirstResponder() {
+
+            let userInfo: [NSObject : AnyObject] = sender.userInfo!
+            let keyboardSize: CGSize = userInfo[UIKeyboardFrameBeginUserInfoKey]!.CGRectValue.size
+            let offset: CGSize = userInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue.size
+        
+            if keyboardSize.height == offset.height {
+                if self.view.frame.origin.y == 0 {
+                    UIView.animateWithDuration(0.1, animations: { () -> Void in self.view.frame.origin.y -= keyboardSize.height})}
+            } else {
+                UIView.animateWithDuration(0.1, animations: { () -> Void in
+                    self.view.frame.origin.y += keyboardSize.height - offset.height})
+            }
+        }
+    }
+    
+    func keyboardWillHide(sender: NSNotification) {
+        // Only shift keyboard for comment text view
+        if commentTextView.isFirstResponder() {
+
+            let userInfo: [NSObject : AnyObject] = sender.userInfo!
+            let keyboardSize: CGSize = userInfo[UIKeyboardFrameBeginUserInfoKey]!.CGRectValue.size
+            self.view.frame.origin.y += keyboardSize.height
+        }
+    }
+
+    func addDoneButtonOnKeyboard()
+    {
+        let doneToolbar: UIToolbar = UIToolbar(frame: CGRectMake(0, 0, 320, 50))
+        doneToolbar.barStyle = UIBarStyle.Default
+        
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+        let done: UIBarButtonItem = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.Done, target: self, action: Selector("doneButtonAction"))
+        
+        var items: [AnyObject] = []
+        items.append(flexSpace)
+        items.append(done)
+        
+        doneToolbar.items = items as? [UIBarButtonItem]
+        doneToolbar.sizeToFit()
+        
+        self.commentTextView.inputAccessoryView = doneToolbar
+        
+    }
+    
+    func doneButtonAction()
+    {
+        self.commentTextView.resignFirstResponder()
+    }
+    
+    // MARK: UITextViewDelegate
+//    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+//        if(text == "\n") {
+//            textView.resignFirstResponder()
+//            return false
+//        }
+//        return true
+//    }
 
     // MARK: UITextFieldDelegate
     func textFieldDidBeginEditing(textField: UITextField) {
@@ -111,9 +198,10 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
             let name = nameTextField.text ?? ""
             let photo = photoImageView.image
             let rating = ratingControl.rating
+            let comment = commentTextView.text ?? ""
             
             // Set the meal to be passed to MealTableViewController after the unwind segue.
-            meal = Meal(name: name, photo: photo, rating: rating)
+            meal = Meal(name: name, photo: photo, rating: rating, comment: comment)
         }
     }
 

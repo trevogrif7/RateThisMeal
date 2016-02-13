@@ -76,12 +76,12 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="nS8-C6-HzY">
-                                <rect key="frame" x="20" y="80" width="560" height="418"/>
+                                <rect key="frame" x="20" y="80" width="560" height="480"/>
                                 <subviews>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" placeholderIntrinsicWidth="560" placeholderIntrinsicHeight="30" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Meal Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="91o-vV-Aj1">
                                         <rect key="frame" x="0.0" y="0.0" width="560" height="30"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits"/>
+                                        <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                     </textField>
                                     <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="320" placeholderIntrinsicHeight="320" image="defaultPhoto" translatesAutoresizingMaskIntoConstraints="NO" id="eod-5a-a5u">
                                         <rect key="frame" x="120" y="42" width="320" height="320"/>
@@ -97,8 +97,18 @@
                                         <rect key="frame" x="160" y="374" width="240" height="44"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </view>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Comments..." translatesAutoresizingMaskIntoConstraints="NO" id="jkO-7T-DLV">
+                                        <rect key="frame" x="0.0" y="430" width="560" height="50"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="yRR-D8-SPr"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textView>
                                 </subviews>
                                 <constraints>
+                                    <constraint firstItem="jkO-7T-DLV" firstAttribute="leading" secondItem="91o-vV-Aj1" secondAttribute="leading" id="JvK-zx-6mb"/>
                                     <constraint firstItem="91o-vV-Aj1" firstAttribute="leading" secondItem="nS8-C6-HzY" secondAttribute="leading" id="XyD-Tj-Kp0"/>
                                     <constraint firstAttribute="trailing" secondItem="91o-vV-Aj1" secondAttribute="trailing" id="ljT-aW-1Wg"/>
                                 </constraints>
@@ -124,6 +134,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="commentTextView" destination="jkO-7T-DLV" id="K2Q-qN-daR"/>
                         <outlet property="nameTextField" destination="91o-vV-Aj1" id="nWd-qt-DS1"/>
                         <outlet property="photoImageView" destination="eod-5a-a5u" id="jFA-04-MP8"/>
                         <outlet property="ratingControl" destination="DRW-iU-GkS" id="zHG-Ao-uYS"/>
